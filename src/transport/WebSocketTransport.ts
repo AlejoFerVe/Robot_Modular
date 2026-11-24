@@ -1,6 +1,9 @@
 import { Emitter, type Transport, type Unsubscribe } from './Transport';
 
-/** Dirección del ESP32 del Módulo 1 cuando crea su propia red Wi‑Fi (modo punto de acceso). */
+/**
+ * IP fija del ESP32 del Módulo 1 en su propia red Wi‑Fi (modo punto de acceso).
+ * Debe coincidir con IP_ROBOT en firmware/modulo1_wifi/modulo1_wifi.ino.
+ */
 export const DEFAULT_WIFI_HOST = '192.168.4.1';
 export const WIFI_PORT = 81;
 const OPEN_TIMEOUT_MS = 5000;

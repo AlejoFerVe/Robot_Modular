@@ -29,6 +29,10 @@
 const char*    WIFI_SSID     = "RobotModular";
 const char*    WIFI_PASSWORD = "robot1234";     // mínimo 8 caracteres
 const uint16_t WS_PUERTO     = 81;
+// IP fija del robot. Debe coincidir con DEFAULT_WIFI_HOST de la app
+// (src/transport/WebSocketTransport.ts).
+const IPAddress IP_ROBOT(192, 168, 4, 1);
+const IPAddress MASCARA_RED(255, 255, 255, 0);
 const char*    FIRMWARE_VERSION = "0.2.0";
 
 // 1 = comportamiento de la prueba anterior (avanza solo + servos tipo reloj).
@@ -747,9 +751,10 @@ void setup() {
     escribirServo(i, anguloServo[i]);
   }
 
-  // Wi‑Fi: punto de acceso propio (IP 192.168.4.1)
+  // Wi‑Fi: punto de acceso propio con IP fija
   WiFi.mode(WIFI_AP);
   WiFi.softAP(WIFI_SSID, WIFI_PASSWORD);
+  WiFi.softAPConfig(IP_ROBOT, IP_ROBOT, MASCARA_RED);
   WiFi.setSleep(false);   // menos latencia
   ws.begin();
   ws.onEvent(eventoWebSocket);
