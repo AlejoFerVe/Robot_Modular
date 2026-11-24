@@ -6,6 +6,7 @@ import { SimulatedRobot } from '../simulator/SimulatedRobot';
 import { SimulatorTransport } from '../simulator/SimulatorTransport';
 import type { Transport } from '../transport/Transport';
 import { WebSerialTransport, isWebSerialSupported } from '../transport/WebSerialTransport';
+import { DEFAULT_WIFI_HOST, WebSocketTransport } from '../transport/WebSocketTransport';
 import { ConnectionBar } from './components/ConnectionBar';
 import { ProgramPanel } from './components/ProgramPanel';
 import { RobotStatusPanel } from './components/RobotStatusPanel';
@@ -19,6 +20,26 @@ export interface AppServices {
   /** Fábrica del transporte USB (se sustituye en pruebas). */
   readonly createSerialTransport: () => Transport;
   readonly serialSupported: boolean;
+  /** Fábrica del transporte Wi‑Fi (WebSocket hacia el ESP32 del Módulo 1). */
+  readonly createWifiTransport?: (host: string) => Transport;
+}
+
+const WIFI_HOST_KEY = 'robot-modular:wifi-host';
+
+function loadWifiHost(): string {
+  try {
+    return window.localStorage.getItem(WIFI_HOST_KEY) ?? DEFAULT_WIFI_HOST;
+  } catch {
+    return DEFAULT_WIFI_HOST;
+  }
+}
+
+function saveWifiHost(host: string): void {
+  try {
+    window.localStorage.setItem(WIFI_HOST_KEY, host);
+  } catch {
+    // Sin almacenamiento: solo se pierde la dirección recordada.
+  }
 }
 
 const memoryStorage = (): KeyValueStorage => {
@@ -45,6 +66,7 @@ export function createServices(): AppServices {
     store: new ProjectStore(safeLocalStorage()),
     createSerialTransport: () => new WebSerialTransport(),
     serialSupported: isWebSerialSupported(),
+    createWifiTransport: (host) => new WebSocketTransport(host),
   };
 }
 
@@ -59,6 +81,7 @@ export function App({ services }: { readonly services: AppServices }) {
   const execution = useStore(controller);
   const [simulation, setSimulation] = useState<Simulation | null>(null);
   const [busy, setBusy] = useState(false);
+  const [wifiHost, setWifiHost] = useState(loadWifiHost);
 
   useEffect(
     () =>
@@ -94,6 +117,14 @@ export function App({ services }: { readonly services: AppServices }) {
     void connect(services.createSerialTransport());
   };
 
+  const connectWifi = (): void => {
+    setSimulation(null);
+    const host = wifiHost.trim() || DEFAULT_WIFI_HOST;
+    saveWifiHost(host);
+    const factory = services.createWifiTransport ?? ((h: string) => new WebSocketTransport(h));
+    void connect(factory(host));
+  };
+
   const disconnect = (): void => {
     void controller.stop().finally(() => session.disconnect());
     setSimulation(null);
@@ -115,7 +146,10 @@ export function App({ services }: { readonly services: AppServices }) {
           session={sessionState}
           serialSupported={services.serialSupported}
           busy={busy}
+          wifiHost={wifiHost}
+          onWifiHostChange={setWifiHost}
           onConnectSerial={connectSerial}
+          onConnectWifi={connectWifi}
           onConnectSimulator={connectSimulator}
           onDisconnect={disconnect}
         />
@@ -151,7 +185,10 @@ function HelpCard() {
         <span aria-hidden="true">💡</span> ¿Cómo empiezo?
       </h2>
       <ol>
-        <li>Conecta el robot con el cable USB (o prueba el simulador).</li>
+        <li>
+          Conecta el robot con el cable USB, o conecta tu PC a la red Wi‑Fi <strong>RobotModular</strong> y pulsa{' '}
+          <strong>📶 Conectar por Wi‑Fi</strong> (o prueba el simulador).
+        </li>
         <li>Arrastra bloques debajo de <strong>▶ Al iniciar</strong>.</li>
         <li>Pulsa <strong>▶ Ejecutar</strong>. Para parar, pulsa <strong>■ Detener</strong> o la tecla Esc.</li>
       </ol>

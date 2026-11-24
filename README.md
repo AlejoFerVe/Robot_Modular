@@ -11,6 +11,9 @@ npm run dev        # http://localhost:5173  (usar Chrome o Edge para USB)
 ```
 
 - **🔌 Conectar robot (USB):** abre el selector de puertos serie del navegador (Web Serial, 115200 baudios).
+- **📶 Conectar por Wi‑Fi:** carga `firmware/modulo1_wifi/modulo1_wifi.ino` en el ESP32 del
+  Módulo 1, conecta el PC a la red `RobotModular` (clave `robot1234`) y pulsa el botón
+  (dirección por defecto `192.168.4.1`).
 - **🧪 Usar simulador:** robot virtual para trabajar sin hardware. Se muestra siempre la
   franja «MODO SIMULADOR» y el panel «Robot virtual» con la etiqueta SIMULADO.
 

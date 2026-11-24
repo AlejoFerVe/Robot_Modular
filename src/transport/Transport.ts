@@ -1,10 +1,9 @@
 /**
  * Capa de transporte entre la aplicación y el ESP32 del Módulo 1.
  * Solo mueve texto; no sabe nada del protocolo ni de los bloques.
- * Implementaciones: USB serie (Web Serial) y simulador. Wi‑Fi (WebSocket)
- * podrá añadirse implementando esta misma interfaz.
+ * Implementaciones: USB serie (Web Serial), Wi‑Fi (WebSocket) y simulador.
  */
-export type TransportKind = 'serial' | 'simulator';
+export type TransportKind = 'serial' | 'wifi' | 'simulator';
 
 export type Unsubscribe = () => void;
 

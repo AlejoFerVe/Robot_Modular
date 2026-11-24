@@ -223,6 +223,23 @@ input:focus-visible {
   flex-wrap: wrap;
 }
 
+.wifi-connect {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.wifi-host {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.6rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  max-width: 9.5rem;
+}
+
 .link-indicator {
   display: inline-flex;
   align-items: center;

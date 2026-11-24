@@ -11,7 +11,7 @@ entre el Módulo 1 y los módulos 2 y 3 (ver `ARQUITECTURA.md`).
 | Aspecto | Valor |
 |---|---|
 | Transporte del prototipo | USB serie (CDC), **115200 baudios**, 8N1 |
-| Transporte futuro | Wi‑Fi (WebSocket) con el mismo formato de mensajes |
+| Transporte Wi‑Fi | WebSocket `ws://192.168.4.1:81/` (el ESP32 crea la red `RobotModular`); mismo formato, un mensaje de texto por objeto JSON. Implementado en `firmware/modulo1_wifi/` y `src/transport/WebSocketTransport.ts` |
 | Codificación | UTF‑8, **un objeto JSON por línea**, terminado en `\n` (se tolera `\r\n`) |
 | Longitud máxima de línea | 2048 bytes (las más largas se descartan completas) |
 | Campo de versión | `"v": 1` en todos los mensajes (versión **mayor** del protocolo) |
